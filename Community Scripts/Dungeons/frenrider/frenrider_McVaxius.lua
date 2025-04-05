@@ -1,5 +1,13 @@
 --[[
 Changelog
+v2.1
+social distancing tested properly
+emotes tested properly
+added wiggle to social distancing
+improved the defaults on everything a little bit more
+included some autorot presets
+re-orged folders
+
 v2.0
 added DD and FATE sections and logic related to them
 added social distancing in forays and outdoor areas
@@ -1110,7 +1118,7 @@ while weirdvar == 1 do
 								--cancel movement
 								--yield("/send s")
 								yield("/mount \""..fool_flier.."\"")
-								yield("/wait 5")
+								--yield("/wait 5") -- we can mount and move now
 								ClearTarget()
 								yield("/rotation Cancel")
 								--try to fly 
