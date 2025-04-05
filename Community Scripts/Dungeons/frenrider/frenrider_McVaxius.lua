@@ -5,8 +5,9 @@ social distancing tested properly
 emotes tested properly
 added wiggle to social distancing
 improved the defaults on everything a little bit more
-included some autorot presets
+included some autorot presets - i didn't make one for FATE . i think the FRENRIDER one is sufficient for that purpose
 re-orged folders
+IDEAS: Some configs specifically for THUNT (Treasure Hunt Maps) and maybe FORAY ?!?!?
 
 v2.0
 added DD and FATE sections and logic related to them
@@ -797,8 +798,13 @@ function checkzoi()
 		pandora_interact_toggler_count = 0
 		are_we_in_i_zone = 0
 		--prae, meri, dze, halatali	
+		GZI = GetZoneID()
+		if GZI == 1037 then--tam-tara special behaviour since the bossmodule isn't complete and im lazy - it works
+			yield("/target Inconspicuous Imp")
+			double_check_navGO(GetObjectRawXPos("Inconspicuous Imp"),GetObjectRawYPos("Inconspicuous Imp"),GetObjectRawZPos("Inconspicuous Imp"))
+		end
 		for zzz=1,#zoi do
-			if zoi[zzz] == GetZoneID() then
+			if zoi[zzz] == GZI then
 				are_we_in_i_zone = 1
 			end
 			yield("/wait 0.5")
