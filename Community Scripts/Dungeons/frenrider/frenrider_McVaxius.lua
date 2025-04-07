@@ -134,6 +134,7 @@ cling = ini_check("cling", 2.6) 							-- Distance to trigger a cling to fren wh
 clingtype = ini_check("clingtype", 0)						-- Clingtype, 0 = navmesh [Default], 1 = visland, 2 = bossmod follow leader, 3 = CBT autofollow, 4 = vanilla game follow
 clingtypeduty = ini_check("clingtypeduty", 2)				-- do we need a diff clingtype in duties? use same numbering as above 
 socialdistancing = ini_check("socialdistancing", 5)			-- if this value is > 0 then it won't get any closer than this even if cling is lower.  The reason is to keep them from looking too much like bots.  it will consider this value only in outdoor areas, and foray areas.
+socialdistancing_indoors = ini_check("socialdistancing_indoors", 1)	-- if this value is 1 then it will social distance indoors too! i set it to 1 as default. you can change it to 0 for defaults or if you need tigther following in dungeons/duties
 socialdistance_x_wiggle = ini_check("socialdistance_x_wiggle", 1) -- wiggle +/- this many yalms on the x axis during social distancing
 socialdistance_z_wiggle = ini_check("socialdistance_z_wiggle", 1) -- wiggle +/- this many yalms on the z axis during social distancing
 maxbistance = ini_check("maxbistance", 50) 					-- Max distance from fren that we will actually chase them, so that we dont get zone hopping situations ;p
@@ -325,11 +326,21 @@ idle_shitter_list = {
 "/laugh",
 "/cry",
 "/dance",
-"/tomestone",
+"/tomescroll",
+"/study",
 "/panic",
 "/wave",
 "/goodbye",
 "/yawn",
+"/blowkiss",
+"/bread",
+"/examineself",
+"/mandervilledance",
+"/lookout",
+"/pushups",
+"/winded",
+"/groundsit",
+"/lean",
 "/photograph"
 }
 
@@ -570,6 +581,10 @@ function are_we_distancing()
 				--are_we_social_distancing = 1
 			end
 		end
+	end
+	if socialdistancing_indoors == 1 then
+		returnval = 1 --force it if we need to force it.
+		--yield("/echo we are Social distancing EVERYWHERE!")
 	end
 	if GetCharacterCondition(34) == false and returnval == 0 then
 		returnval = 1
@@ -812,6 +827,7 @@ function checkzoi()
 		if are_we_in_i_zone == 1 and did_we_toggle == 0 then
 			PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
 			did_we_toggle = 1
+			hcling = cling -- no social distancing if we need to interact with shit
 			yield("/echo Turning on Pandora Auto Interact -- it will be turned off when we leave this area")
 			--yield("/echo PandoraSetFeatureState(Auto-interact with Objects in Instances,true)")
 		end
