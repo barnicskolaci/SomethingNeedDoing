@@ -344,7 +344,7 @@ idle_shitter_list = {
 "/lookout",
 "/pushups",
 "/winded",
-"/groundsit",
+--"/groundsit", --they get stuck
 "/lean",
 "/photograph"
 }
@@ -650,6 +650,9 @@ function checkAREA()
 	if idle_shitter_counter > idle_shitter_tic then  --its time to do something idle shitters!
 		idle_shitter_counter = 0
 --			yield("/echo we attempted to -> shitter to 0 counter")
+		if GetCharacterCondition(11) == true then --groundsit
+			yield("/gaction jump")
+		end
 		if idle_shitter ~= "list" and idle_shitter ~= "nothing" then
 			yield(idle_shitter)
 --			yield("/echo we attempted to -> "..idle_shitter)
