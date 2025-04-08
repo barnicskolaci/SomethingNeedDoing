@@ -327,7 +327,7 @@ idle_shitter_list = {
 "/laugh",
 "/cry",
 "/dance",
-"/tomescroll",
+"/tomescroll", --requires companion app to be setup and linked to acc. reee
 "/study",
 "/panic",
 "/wave",
