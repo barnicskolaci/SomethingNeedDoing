@@ -617,7 +617,7 @@ function checkAREA()
 	if IsAddonVisible("DeepDungeonMap") then
 --		if IsAddonReady("DeepDungeonMap") then
 		if HasPlugin("BossMod") then
-			yield("/vbm ar set "..autorotationtypeDD) 
+			yield("/vbm setpresetname "..autorotationtypeDD) 
 			yield("/vbmai off")
 		end
 		if HasPlugin("BossModReborn") then yield("/bmrai setpresetname "..autorotationtypeDD) end
@@ -636,7 +636,7 @@ function checkAREA()
 				yield("/wait 1")
 			until HasPlugin("BossMod")
 			yield("/vbmai "..bossmodAI)
-			yield("/vbm ar set "..autorotationtype)
+			yield("/vbm setpresetname "..autorotationtype)
 			yield("/echo WE SWITCHED TO VBM FROM BMR - please review DTR bar etc.")
 		end
 		--]]
@@ -724,13 +724,13 @@ function clingmove(nemm)
 			--yield("/echo x->"..GetObjectRawXPos(nemm).."y->"..GetObjectRawYPos(nemm).."z->"..GetObjectRawZPos(nemm))--if its 0,0,0 we are not gonna do shiiiit.
 			--PathfindAndMoveTo(GetObjectRawXPos(nemm),GetObjectRawYPos(nemm),GetObjectRawZPos(nemm), false)
 			if bistance > hcling then
-				if are_we_social_distancing == 1 then
+				if are_we_social_distancing == 1 and are_we_in_i_zone == 0 then --if we need to spread AND we arent in a zone of interact
 					--*we will do some stuff here
 					fartX,fartZ = calculateBufferXY (GetPlayerRawXPos(),GetPlayerRawZPos(),GetObjectRawXPos(nemm),GetObjectRawZPos(nemm))
 					if GetCharacterCondition(77) == false then yield("/vnav moveto "..fartX.." "..GetObjectRawYPos(nemm).." "..fartZ) end
 					if GetCharacterCondition(77) == true then yield("/vnav flyto "..fartX.." "..GetObjectRawYPos(nemm).." "..fartZ) end
 				end
-				if are_we_social_distancing == 0 then
+				if are_we_social_distancing == 0 or are_we_in_i_zone == 1 then --if we don't need to spread OR we are in a zone of interact
 					if GetCharacterCondition(77) == false then yield("/vnav moveto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 					if GetCharacterCondition(77) == true then yield("/vnav flyto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 				end
@@ -817,22 +817,24 @@ function checkzoi()
 	if pandora_interact_toggler_count > 10 then
 		pandora_interact_toggler_count = 0
 		are_we_in_i_zone = 0
-		--prae, meri, dze, halatali	
 		GZI = GetZoneID()
 		if GZI == 1037 then--tam-tara special behaviour since the bossmodule isn't complete and im lazy - it works
 			yield("/target Inconspicuous Imp")
 			double_check_navGO(GetObjectRawXPos("Inconspicuous Imp"),GetObjectRawYPos("Inconspicuous Imp"),GetObjectRawZPos("Inconspicuous Imp"))
 		end
+		--prae, meri, dze, halatali	
 		for zzz=1,#zoi do
 			if zoi[zzz] == GZI then
 				are_we_in_i_zone = 1
 			end
 			yield("/wait 0.5")
 		end
+		if are_we_in_i_zone == 1 then
+			hcling = cling -- no social distancing if we need to interact with stuff in the zone
+		end
 		if are_we_in_i_zone == 1 and did_we_toggle == 0 then
 			PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
 			did_we_toggle = 1
-			hcling = cling -- no social distancing if we need to interact with shit
 			yield("/echo Turning on Pandora Auto Interact -- it will be turned off when we leave this area")
 			--yield("/echo PandoraSetFeatureState(Auto-interact with Objects in Instances,true)")
 		end
