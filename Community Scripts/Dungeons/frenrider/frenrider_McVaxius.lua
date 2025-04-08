@@ -323,6 +323,7 @@ pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
 
 --idle shitter list --i don't really care about this list if someone wants to improve it lmk . maybe we could have diff lists and make them an option too? --*
 idle_shitter_list = {
+"/vpose",
 "/laugh",
 "/cry",
 "/dance",
@@ -336,6 +337,10 @@ idle_shitter_list = {
 "/bread",
 "/examineself",
 "/mandervilledance",
+"/bdance",
+"/tdance",
+"/stepdance",
+"/mmambo",
 "/lookout",
 "/pushups",
 "/winded",
