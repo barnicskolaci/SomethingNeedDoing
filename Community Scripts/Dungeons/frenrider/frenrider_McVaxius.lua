@@ -344,7 +344,7 @@ idle_shitter_list = {
 "/lookout",
 "/pushups",
 "/winded",
---"/groundsit", --they get stuck
+"/groundsit",
 "/lean",
 "/photograph"
 }
@@ -650,9 +650,6 @@ function checkAREA()
 	if idle_shitter_counter > idle_shitter_tic then  --its time to do something idle shitters!
 		idle_shitter_counter = 0
 --			yield("/echo we attempted to -> shitter to 0 counter")
-		if GetCharacterCondition(11) == true then --groundsit
-			yield("/gaction jump")
-		end
 		if idle_shitter ~= "list" and idle_shitter ~= "nothing" then
 			yield(idle_shitter)
 --			yield("/echo we attempted to -> "..idle_shitter)
@@ -687,6 +684,7 @@ end
 
 function clingmove(nemm)
 	checkAREA()
+	did_we_try_to_move = 0
 	if GetTargetName() == "Vault Door" then --we in a treasure map dungeon and need to click the door without following the fren
 		--yield("/interact") --no this is dangerous
 		PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
@@ -719,6 +717,7 @@ function clingmove(nemm)
 				yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
 				yield("/hold W <wait.3.0>")
 				yield("/release W")
+				did_we_try_to_move = 1
 			end
 		end
 		--navmesh
@@ -737,18 +736,21 @@ function clingmove(nemm)
 					if GetCharacterCondition(77) == false then yield("/vnav moveto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 					if GetCharacterCondition(77) == true then yield("/vnav flyto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 				end
+				did_we_try_to_move = 1
 			end
 		end
 		--visland
 		if zclingtype == 1 then
 			if GetCharacterCondition(77) == false then yield("/visland moveto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 			if GetCharacterCondition(77) == true then yield("/visland flyto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
+			did_we_try_to_move = 1
 		end
 		--not bmr
 		if zclingtype > 2 or zclingtype < 2 then
 				yield("/bmrai follow "..GetCharacterName())
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai maxdistancetarget 2.6")
+				did_we_try_to_move = 1
 		end
 		--bmr
 		if zclingtype == 2 then
@@ -757,16 +759,19 @@ function clingmove(nemm)
 				yield("/bmrai followtarget on") --* verify this is correct later when we can load dalamud
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai follow "..nemm) 	  --* verify this is correct later when we can load dalamud
+				did_we_try_to_move = 1
 			end
 			if bistance > maxbistance then --follow ourselves if fren too far away or it will do weird shit
 				yield("/bmrai followtarget on") --* verify this is correct later when we can load dalamud
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai follow "..GetCharacterName()) 	  --* verify this is correct later when we can load dalamud
 				yield("/echo too far! stop following!")
+				did_we_try_to_move = 1
 			end
 		end
 		if zclingtype == 3 then
 			yield("/autofollow "..nemm)
+			did_we_try_to_move = 1
 		end
 		if zclingtype == 4 then
 			--we only doing this silly method out of combat
@@ -774,6 +779,7 @@ function clingmove(nemm)
 				--yield("/target "..nemm)
 				yield("/target \""..nemm.."\"")
 				yield("/follow")
+				did_we_try_to_move = 1
 			end
 			--if we in combat and target is nemm we will clear it becuase that may bork autotarget from RSR
 			if GetCharacterCondition(26) == true then
@@ -781,6 +787,11 @@ function clingmove(nemm)
 					ClearTarget()
 				end
 			end
+		end
+	end
+	if did_we_try_to_move == 1 then --check some things just in case
+		if GetCharacterCondition(11) == true then --groundsit
+			yield("/gaction jump")
 		end
 	end
 end
