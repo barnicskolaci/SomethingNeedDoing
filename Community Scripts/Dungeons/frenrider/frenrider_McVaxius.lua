@@ -225,8 +225,7 @@ end
 yield("/echo Starting fren rider")
 --yield("/target \""..fren.."\"")
 yield("/wait 0.5")
---yield("/mk cross <t>")
---yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled
+--yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled sometimes
 
 yield("/vbmai "..bossmodAI)
 yield("/bmrai "..bossmodAI)
@@ -750,7 +749,6 @@ function clingmove(nemm)
 				yield("/bmrai follow "..GetCharacterName())
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai maxdistancetarget 2.6")
-				did_we_try_to_move = 1
 		end
 		--bmr
 		if zclingtype == 2 then
@@ -976,8 +974,6 @@ while weirdvar == 1 do
 				if GetCharacterCondition(26) == true and formation == false then --in combat
 					if formation == false then
 						if bistance > hcling and bistance < maxbistance then
-						--yield("/target \""..fren.."\"")
-							--PathfindAndMoveTo(GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren), false)
 							clingmove(fren) --movement func
 						end
 						yield("/wait 0.5")
@@ -1094,28 +1090,10 @@ while weirdvar == 1 do
 						--follow the fren
 						if GetCharacterCondition(4) == true and bistance > hcling and PathIsRunning() == false and PathfindInProgress() == false then
 							--yield("/echo attempting to fly to fren")
-							--bmr follow on. we comin
-							--yield("/bmrai follow slot"..fartycardinality)
-							--yield("/bmrai follow "..fren)
 							clingmove(fren)
 
 							yield("/target <"..fartycardinality..">")
 							
-							--yield("/follow")
-							--yield("/wait 0.1") --we dont want to go tooo hard on this
-							
-							--i could't make the following method smooth please help :(
-							--[[
-							yield("/vnavmesh flyto "..GetObjectRawXPos(fren).." "..GetObjectRawYPos(fren).." "..GetObjectRawZPos(fren))
-							looptillwedroop = 0
-							while looptillwedroop == 0 do
-								if PathIsRunning() == false and PathfindInProgress() == false then
-									looptillwedroop = 1
-									yield("/echo Debug Ok we reached path")
-								end
-								yield("/wait 0.1")
-							end
-							]]
 						end
 					end
 					if GetCharacterCondition(4) == false and GetCharacterCondition(10) == false then --not mounted and not mounted2 (riding friend)
@@ -1145,12 +1123,7 @@ while weirdvar == 1 do
 							end
 							yield("/wait 0.5")
 						end	
-						--yield("/lockon on")
-						--yield("/automove on")
 
-						--[[yield("/ridepillion <"..mker.."> 1")
-						yield("/ridepillion <"..mker.."> 2")
-						yield("/ridepillion <"..mker.."> 3")]]
 						--yield("/echo fly fools .."..tostring(fly_you_fools))
 						if fly_you_fools == true then
 							if GetCharacterCondition(4) == true then
@@ -1159,7 +1132,6 @@ while weirdvar == 1 do
 							if GetCharacterCondition(4) == false and GetCharacterCondition(10) == false and IsPartyMemberMounted(shartycardinality) == true then
 								--mountup your own mount
 								--cancel movement
-								--yield("/send s")
 								yield("/mount \""..fool_flier.."\"")
 								--yield("/wait 5") -- we can mount and move now
 								ClearTarget()
