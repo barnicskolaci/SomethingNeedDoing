@@ -282,8 +282,9 @@ function WalkToGC()
 			yield("/wait 5")
 			while GetZoneID() ~= 128 do  --sometimes things get stuck in limsa or pre-limsa this should solve it.
 				toiletvisitor = toiletvisitor + 1
-				if toiletvisitor > 5 then
+				if toiletvisitor > 10 then
 					yield("/pcraft stop")
+					yield("/vnav stop")
 				end
 				yield("/li aftcastle") 
 				yield("/wait 5")
