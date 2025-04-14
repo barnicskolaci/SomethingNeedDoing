@@ -496,8 +496,8 @@ function FUTA_robust_gc()
 	end
 	weclean = 0
 	if process_players == 1  then
-		TeleportToGCTown()
-		ZoneTransition()
+		--TeleportToGCTown()
+		--ZoneTransition()
 		yield("/echo Walk to GC attempt 1")
 		yield("/wait 2")
 		WalkToGC()

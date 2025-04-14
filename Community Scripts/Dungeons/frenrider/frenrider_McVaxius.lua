@@ -1,5 +1,14 @@
 --[[
 Changelog
+v2.1
+social distancing tested properly
+emotes tested properly
+added wiggle to social distancing
+improved the defaults on everything a little bit more
+included some autorot presets - i didn't make one for FATE . i think the FRENRIDER one is sufficient for that purpose
+re-orged folders
+IDEAS: Some configs specifically for THUNT (Treasure Hunt Maps) and maybe FORAY ?!?!?
+
 v2.0
 added DD and FATE sections and logic related to them
 added social distancing in forays and outdoor areas
@@ -125,6 +134,7 @@ cling = ini_check("cling", 2.6) 							-- Distance to trigger a cling to fren wh
 clingtype = ini_check("clingtype", 0)						-- Clingtype, 0 = navmesh [Default], 1 = visland, 2 = bossmod follow leader, 3 = CBT autofollow, 4 = vanilla game follow
 clingtypeduty = ini_check("clingtypeduty", 2)				-- do we need a diff clingtype in duties? use same numbering as above 
 socialdistancing = ini_check("socialdistancing", 5)			-- if this value is > 0 then it won't get any closer than this even if cling is lower.  The reason is to keep them from looking too much like bots.  it will consider this value only in outdoor areas, and foray areas.
+socialdistancing_indoors = ini_check("socialdistancing_indoors", 0)	-- if this value is 1 then it will social distance indoors too! i set it to 1 as default. you can change it to 0 for defaults or if you need tigther following in dungeons/duties. its generally ok in dungeons except when it isn't haha. i changed the default to 0 because i got stuck in cuckerhell
 socialdistance_x_wiggle = ini_check("socialdistance_x_wiggle", 1) -- wiggle +/- this many yalms on the x axis during social distancing
 socialdistance_z_wiggle = ini_check("socialdistance_z_wiggle", 1) -- wiggle +/- this many yalms on the z axis during social distancing
 maxbistance = ini_check("maxbistance", 50) 					-- Max distance from fren that we will actually chase them, so that we dont get zone hopping situations ;p
@@ -215,8 +225,7 @@ end
 yield("/echo Starting fren rider")
 --yield("/target \""..fren.."\"")
 yield("/wait 0.5")
---yield("/mk cross <t>")
---yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled
+--yield("/xldisableplugin AutoDuty")  --this will cause grief if it is enabled sometimes
 
 yield("/vbmai "..bossmodAI)
 yield("/bmrai "..bossmodAI)
@@ -313,14 +322,29 @@ pandora_interact_toggler_count = 0 -- for checking on pandora interact settings.
 
 --idle shitter list --i don't really care about this list if someone wants to improve it lmk . maybe we could have diff lists and make them an option too? --*
 idle_shitter_list = {
+"/vpose",
 "/laugh",
 "/cry",
 "/dance",
-"/tomestone",
+"/tomescroll", --requires companion app to be setup and linked to acc. reee
+"/study",
 "/panic",
 "/wave",
 "/goodbye",
 "/yawn",
+"/blowkiss",
+"/bread",
+"/examineself",
+"/mandervilledance",
+"/bdance",
+"/tdance",
+"/stepdance",
+"/mmambo",
+"/lookout",
+"/pushups",
+"/winded",
+"/groundsit",
+"/lean",
 "/photograph"
 }
 
@@ -556,11 +580,15 @@ function are_we_distancing()
 	for i=1,#duties_with_distancing do
 		if zown == duties_with_distancing[i][1] then
 			if socialdistancing > 0 then 
-				yield("/echo We are in a social distancing area (foray) -> "..duties_with_distancing[i][2].."("..duties_with_distancing[i][1]..")")
+				--yield("/echo We are in a social distancing area (foray) -> "..duties_with_distancing[i][2].."("..duties_with_distancing[i][1]..")")
 				returnval = 1
 				--are_we_social_distancing = 1
 			end
 		end
+	end
+	if socialdistancing_indoors == 1 then
+		returnval = 1 --force it if we need to force it.
+		--yield("/echo we are Social distancing EVERYWHERE!")
 	end
 	if GetCharacterCondition(34) == false and returnval == 0 then
 		returnval = 1
@@ -588,7 +616,7 @@ function checkAREA()
 	if IsAddonVisible("DeepDungeonMap") then
 --		if IsAddonReady("DeepDungeonMap") then
 		if HasPlugin("BossMod") then
-			yield("/vbm ar set "..autorotationtypeDD) 
+			yield("/vbm setpresetname "..autorotationtypeDD) 
 			yield("/vbmai off")
 		end
 		if HasPlugin("BossModReborn") then yield("/bmrai setpresetname "..autorotationtypeDD) end
@@ -607,7 +635,7 @@ function checkAREA()
 				yield("/wait 1")
 			until HasPlugin("BossMod")
 			yield("/vbmai "..bossmodAI)
-			yield("/vbm ar set "..autorotationtype)
+			yield("/vbm setpresetname "..autorotationtype)
 			yield("/echo WE SWITCHED TO VBM FROM BMR - please review DTR bar etc.")
 		end
 		--]]
@@ -655,6 +683,7 @@ end
 
 function clingmove(nemm)
 	checkAREA()
+	did_we_try_to_move = 0
 	if GetTargetName() == "Vault Door" then --we in a treasure map dungeon and need to click the door without following the fren
 		--yield("/interact") --no this is dangerous
 		PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
@@ -687,6 +716,7 @@ function clingmove(nemm)
 				yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
 				yield("/hold W <wait.3.0>")
 				yield("/release W")
+				did_we_try_to_move = 1
 			end
 		end
 		--navmesh
@@ -695,22 +725,24 @@ function clingmove(nemm)
 			--yield("/echo x->"..GetObjectRawXPos(nemm).."y->"..GetObjectRawYPos(nemm).."z->"..GetObjectRawZPos(nemm))--if its 0,0,0 we are not gonna do shiiiit.
 			--PathfindAndMoveTo(GetObjectRawXPos(nemm),GetObjectRawYPos(nemm),GetObjectRawZPos(nemm), false)
 			if bistance > hcling then
-				if are_we_social_distancing == 1 then
+				if are_we_social_distancing == 1 and are_we_in_i_zone == 0 then --if we need to spread AND we arent in a zone of interact
 					--*we will do some stuff here
 					fartX,fartZ = calculateBufferXY (GetPlayerRawXPos(),GetPlayerRawZPos(),GetObjectRawXPos(nemm),GetObjectRawZPos(nemm))
 					if GetCharacterCondition(77) == false then yield("/vnav moveto "..fartX.." "..GetObjectRawYPos(nemm).." "..fartZ) end
 					if GetCharacterCondition(77) == true then yield("/vnav flyto "..fartX.." "..GetObjectRawYPos(nemm).." "..fartZ) end
 				end
-				if are_we_social_distancing == 0 then
+				if are_we_social_distancing == 0 or are_we_in_i_zone == 1 then --if we don't need to spread OR we are in a zone of interact
 					if GetCharacterCondition(77) == false then yield("/vnav moveto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 					if GetCharacterCondition(77) == true then yield("/vnav flyto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 				end
+				did_we_try_to_move = 1
 			end
 		end
 		--visland
 		if zclingtype == 1 then
 			if GetCharacterCondition(77) == false then yield("/visland moveto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
 			if GetCharacterCondition(77) == true then yield("/visland flyto "..GetObjectRawXPos(nemm).." "..GetObjectRawYPos(nemm).." "..GetObjectRawZPos(nemm)) end
+			did_we_try_to_move = 1
 		end
 		--not bmr
 		if zclingtype > 2 or zclingtype < 2 then
@@ -725,16 +757,19 @@ function clingmove(nemm)
 				yield("/bmrai followtarget on") --* verify this is correct later when we can load dalamud
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai follow "..nemm) 	  --* verify this is correct later when we can load dalamud
+				did_we_try_to_move = 1
 			end
 			if bistance > maxbistance then --follow ourselves if fren too far away or it will do weird shit
 				yield("/bmrai followtarget on") --* verify this is correct later when we can load dalamud
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai follow "..GetCharacterName()) 	  --* verify this is correct later when we can load dalamud
 				yield("/echo too far! stop following!")
+				did_we_try_to_move = 1
 			end
 		end
 		if zclingtype == 3 then
 			yield("/autofollow "..nemm)
+			did_we_try_to_move = 1
 		end
 		if zclingtype == 4 then
 			--we only doing this silly method out of combat
@@ -742,6 +777,7 @@ function clingmove(nemm)
 				--yield("/target "..nemm)
 				yield("/target \""..nemm.."\"")
 				yield("/follow")
+				did_we_try_to_move = 1
 			end
 			--if we in combat and target is nemm we will clear it becuase that may bork autotarget from RSR
 			if GetCharacterCondition(26) == true then
@@ -749,6 +785,11 @@ function clingmove(nemm)
 					ClearTarget()
 				end
 			end
+		end
+	end
+	if did_we_try_to_move == 1 then --check some things just in case
+		if GetCharacterCondition(11) == true then --groundsit
+			yield("/gaction jump")
 		end
 	end
 end
@@ -788,12 +829,20 @@ function checkzoi()
 	if pandora_interact_toggler_count > 10 then
 		pandora_interact_toggler_count = 0
 		are_we_in_i_zone = 0
+		GZI = GetZoneID()
+		if GZI == 1037 then--tam-tara special behaviour since the bossmodule isn't complete and im lazy - it works
+			yield("/target Inconspicuous Imp")
+			double_check_navGO(GetObjectRawXPos("Inconspicuous Imp"),GetObjectRawYPos("Inconspicuous Imp"),GetObjectRawZPos("Inconspicuous Imp"))
+		end
 		--prae, meri, dze, halatali	
 		for zzz=1,#zoi do
-			if zoi[zzz] == GetZoneID() then
+			if zoi[zzz] == GZI then
 				are_we_in_i_zone = 1
 			end
 			yield("/wait 0.5")
+		end
+		if are_we_in_i_zone == 1 then
+			hcling = cling -- no social distancing if we need to interact with stuff in the zone
 		end
 		if are_we_in_i_zone == 1 and did_we_toggle == 0 then
 			PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
@@ -925,8 +974,6 @@ while weirdvar == 1 do
 				if GetCharacterCondition(26) == true and formation == false then --in combat
 					if formation == false then
 						if bistance > hcling and bistance < maxbistance then
-						--yield("/target \""..fren.."\"")
-							--PathfindAndMoveTo(GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren), false)
 							clingmove(fren) --movement func
 						end
 						yield("/wait 0.5")
@@ -1043,28 +1090,10 @@ while weirdvar == 1 do
 						--follow the fren
 						if GetCharacterCondition(4) == true and bistance > hcling and PathIsRunning() == false and PathfindInProgress() == false then
 							--yield("/echo attempting to fly to fren")
-							--bmr follow on. we comin
-							--yield("/bmrai follow slot"..fartycardinality)
-							--yield("/bmrai follow "..fren)
 							clingmove(fren)
 
 							yield("/target <"..fartycardinality..">")
 							
-							--yield("/follow")
-							--yield("/wait 0.1") --we dont want to go tooo hard on this
-							
-							--i could't make the following method smooth please help :(
-							--[[
-							yield("/vnavmesh flyto "..GetObjectRawXPos(fren).." "..GetObjectRawYPos(fren).." "..GetObjectRawZPos(fren))
-							looptillwedroop = 0
-							while looptillwedroop == 0 do
-								if PathIsRunning() == false and PathfindInProgress() == false then
-									looptillwedroop = 1
-									yield("/echo Debug Ok we reached path")
-								end
-								yield("/wait 0.1")
-							end
-							]]
 						end
 					end
 					if GetCharacterCondition(4) == false and GetCharacterCondition(10) == false then --not mounted and not mounted2 (riding friend)
@@ -1094,12 +1123,7 @@ while weirdvar == 1 do
 							end
 							yield("/wait 0.5")
 						end	
-						--yield("/lockon on")
-						--yield("/automove on")
 
-						--[[yield("/ridepillion <"..mker.."> 1")
-						yield("/ridepillion <"..mker.."> 2")
-						yield("/ridepillion <"..mker.."> 3")]]
 						--yield("/echo fly fools .."..tostring(fly_you_fools))
 						if fly_you_fools == true then
 							if GetCharacterCondition(4) == true then
@@ -1108,9 +1132,8 @@ while weirdvar == 1 do
 							if GetCharacterCondition(4) == false and GetCharacterCondition(10) == false and IsPartyMemberMounted(shartycardinality) == true then
 								--mountup your own mount
 								--cancel movement
-								--yield("/send s")
 								yield("/mount \""..fool_flier.."\"")
-								yield("/wait 5")
+								--yield("/wait 5") -- we can mount and move now
 								ClearTarget()
 								yield("/rotation Cancel")
 								--try to fly 
