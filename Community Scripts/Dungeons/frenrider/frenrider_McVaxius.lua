@@ -88,15 +88,14 @@ open_on_next_load = 0          -- Set this to 1 if you want the next time the sc
 -- VERSION VAR --
 -- VERSION VAR --
 vershun = 1                    -- Version number used to decide if you want to delete/remake the ini files on next load. useful if your changing party leaders for groups of chars or new version of script with fundamental changes
-ini_check("version", vershun)
--- VERSION VAR --
--- VERSION VAR --
--- VERSION VAR --
--- VERSION VAR --
 loadfiyel = os.getenv("appdata").."\\XIVLauncher\\pluginConfigs\\SomethingNeedDoing\\_functions.lua"
 functionsToLoad = loadfile(loadfiyel)
 functionsToLoad()
 ini_check("version", vershun)
+-- VERSION VAR --
+-- VERSION VAR --
+-- VERSION VAR --
+-- VERSION VAR --
 
 --*****************************************************************
 --************************** END INIZER ***************************
