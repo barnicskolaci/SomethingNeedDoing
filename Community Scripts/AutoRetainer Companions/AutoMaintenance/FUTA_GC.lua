@@ -23,7 +23,7 @@ fcpoint_min   = 500000 --the min fc points required to buy fc buffs. i set it to
 ----------------------
 --Refueling Configs --
 ----------------------
-restock_fuel  = 1111 --0=don't do anything, n>0 -> if we have less ceruleum fuel than this amount on a character that has repair materials, restock up to at least the restock_amt value on next line
+restock_fuel  =  666 --0=don't do anything, n>0 -> if we have less ceruleum fuel than this amount on a character that has repair materials, restock up to at least the restock_amt value on next line
 restock_amt   = 6666 --n>0 minimum amount of total fuel to reach, when restocking
 --------------------
 --Process Configs --
@@ -235,6 +235,16 @@ function Final_GC_Cleaning()
 		ClearTarget()
 	end
 
+	--before any of this. let us check the CUFF var to see if we need to do equipmentationism
+	if FUTA_processors[hoo_arr_weeeeee][7][2] > 0 then
+		seventwo = 1
+		while seventwo < FUTA_processors[hoo_arr_weeeeee][7][2] do
+			yield("/gearset change "..seventwo)
+			yield("/wait 3")
+			force_equip()
+			seventwo = seventwo + 1
+		end
+	end
 	--deliveroo i hack you
 	dellycounter = 100
 	if FUTA_processors[hoo_arr_weeeeee][3][4] == 1 then

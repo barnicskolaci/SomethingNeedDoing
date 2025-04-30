@@ -357,6 +357,7 @@ zoi = {
 1063,--keeper of the lake
 1040,--hawk tua manner
 1036,--cuckstasha
+916,--heros cucklet
 434,--busk bigil
 1063,--snowcuck
 1113,--xelphatol --problem. fix later  dont wanna interact with lifts
@@ -392,13 +393,14 @@ job_configs = {
 {21,2.6,1,0,"Warrior"},
 {32,2.6,1,0,"Dark Knight"},
 {37,2.6,1,0,"Gunbreaker"},
+{43,2.6,1,0,"Beastlord"}, --this is a guess
 
 {20,2.6,1,1,"Monk"},
 {22,2.6,1,1,"Dragoon"},
 {30,2.6,1,1,"Ninja"},
 {34,2.6,1.1,"Samurai"},
 {39,2.6,1,1,"Reaper"},
-{31,2.6,1,1,"Viper"},
+{41,2.6,1,1,"Viper"},
 
 {38,10,1,2,"Dancer"},
 {23,10,1,2,"Bard"},
