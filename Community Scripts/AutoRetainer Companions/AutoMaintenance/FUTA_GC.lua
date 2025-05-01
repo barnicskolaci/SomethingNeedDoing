@@ -236,13 +236,16 @@ function Final_GC_Cleaning()
 	end
 
 	--before any of this. let us check the CUFF var to see if we need to do equipmentationism
-	if FUTA_processors[hoo_arr_weeeeee][7][2] > 0 then
-		seventwo = 1
-		while seventwo < FUTA_processors[hoo_arr_weeeeee][7][2] do
-			yield("/gearset change "..seventwo)
+	--this works but it runs against the desk for a while for some reason?!?!?!?
+	if FUTA_processors[hoo_arr_weeeeee][6][2] > 0 then
+		sixtwo = 0
+		while sixtwo < FUTA_processors[hoo_arr_weeeeee][6][2] do
+			sixtwohehe = sixtwo + 1
+			yield("/echo attempting to pick gearset -> "..sixtwohehe)
+			yield("/gearset change "..sixtwohehe)
 			yield("/wait 3")
 			force_equip()
-			seventwo = seventwo + 1
+			sixtwo = sixtwo + 1
 		end
 	end
 	--deliveroo i hack you

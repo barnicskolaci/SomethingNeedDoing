@@ -355,16 +355,17 @@ end
 
 function force_equip()
  if do_we_force_equip == 1 then
-	 yield("/equipguud") --dont worry about this just some personal thing i did becuase im silly
-	 yield("/equiprecommended")
-	 yield("/character")
-	 if IsAddonReady("Character") then yield("/callback Character true 15") end
-	 yield("/wait 0.5")
-	 if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-	 yield("/character")
-	 if IsAddonReady("Character") then yield("/callback Character true 15") end
-	 if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-	 yield("/wait 3")
+	yield("/echo Forced equipment update has begun - hopefully you have /equiprecommended enabled in /tweaks, aka SimpleTweaks 1PP Plugin from Caraxi")
+	yield("/equipguud") --dont worry about this just some personal thing i did becuase im silly
+	yield("/equiprecommended")
+	yield("/character")
+	if IsAddonReady("Character") then yield("/callback Character true 15") end
+	yield("/wait 0.5")
+	if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+	yield("/character")
+	if IsAddonReady("Character") then yield("/callback Character true 15") end
+	if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+	yield("/wait 3")
  end
 end
 
@@ -399,12 +400,12 @@ function visland_stop_moving()
  yield("/wait 1")
  --added becuase simpletweaks is slow to update :(
  if do_we_force_equip == 1 then
-	 yield("/character")
-	 yield("/wait 1")
- 	 if IsAddonReady("Character") then yield("/callback Character true 12") end
-	 yield("/wait 1")
-	 yield("/callback RecommendEquip true 0")
-	 yield("/wait 1")
+	yield("/character")
+	yield("/wait 1")
+ 	if IsAddonReady("Character") then yield("/callback Character true 12") end
+	yield("/wait 1")
+	yield("/callback RecommendEquip true 0")
+	yield("/wait 1")
  end
 end
 
