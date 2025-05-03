@@ -270,6 +270,8 @@ function rhandling()
 		if autorotationtype ~= "none" then
 			yield("/vbm ar set "..autorotationtype)
 			yield("/bmr ar set "..autorotationtype)
+			yield("/bmrai followtarget on")
+			yield("/bmrai followoutofcombat
 		end
 	end
 	if rotationplogon == "RSR" then
