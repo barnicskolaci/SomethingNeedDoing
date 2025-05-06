@@ -166,6 +166,7 @@ feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case th
 ---MISC---------------------
 ----------------------------
 cbt_edse = ini_check("cbt_edse", 1)							-- CBT enhanced duty start / end. 0 is off, 1 is on.  if its "on" it will turn on this setting if so in a duty and off outside of one.  default is true to save time multiboxing.
+spam_printer  = ini_check("spam_printer", 1)				-- set this to 0 if you dont want to see millions of echo messages reporting in on what frenrider is doing. --* incomplete atm.
 ----------------------------
 ----------------------------
 ----------------------------
@@ -287,6 +288,13 @@ function rhandling()
 	end
 end
 rhandling()
+
+function gawk_gawk_3000(feeling_textual)
+	if spam_printer == 1 then 
+		yield("/echo "..feeling_textual)
+	end
+end
+
 
 if fulftype ~= "unchanged" then
 --turns out its just a toggle we can't turn it on or off purposefully
@@ -526,9 +534,9 @@ function calculateBufferXY(meX, meZ, theyX, theyZ)
     local calcedX = theyX + dx * scale
     local calcedZ = theyZ + dz * scale
 	
-	--yield("/echo getRandomNumber -> "..getRandomNumber(0,socialdistance_x_wiggle))
-	--yield("/echo socialdistance_x_wiggle: " .. tostring(socialdistance_x_wiggle))
-	--yield("/echo socialdistance_z_wiggle: " .. tostring(socialdistance_z_wiggle))
+	--gawk_gawk_3000("getRandomNumber -> "..getRandomNumber(0,socialdistance_x_wiggle))
+	--gawk_gawk_3000("socialdistance_x_wiggle: " .. tostring(socialdistance_x_wiggle))
+	--gawk_gawk_3000("socialdistance_z_wiggle: " .. tostring(socialdistance_z_wiggle))
 
 	if socialdistance_x_wiggle > 0 then
 		calcedX = calcedX + getRandomNumber(-1 * socialdistance_x_wiggle,socialdistance_x_wiggle)
@@ -588,7 +596,7 @@ function are_we_distancing()
 	for i=1,#duties_with_distancing do
 		if zown == duties_with_distancing[i][1] then
 			if socialdistancing > 0 then 
-				--yield("/echo We are in a social distancing area (foray) -> "..duties_with_distancing[i][2].."("..duties_with_distancing[i][1]..")")
+				--gawk_gawk_3000("We are in a social distancing area (foray) -> "..duties_with_distancing[i][2].."("..duties_with_distancing[i][1]..")")
 				returnval = 1
 				--are_we_social_distancing = 1
 			end
@@ -596,11 +604,11 @@ function are_we_distancing()
 	end
 	if socialdistancing_indoors == 1 then
 		returnval = 1 --force it if we need to force it.
-		--yield("/echo we are Social distancing EVERYWHERE!")
+		--gawk_gawk_3000("we are Social distancing EVERYWHERE!")
 	end
 	if GetCharacterCondition(34) == false and returnval == 0 then
 		returnval = 1
-		yield("/echo We aren't in a duty so we are social distancing")
+		gawk_gawk_3000("We aren't in a duty so we are social distancing")
 	end --obviously if we aren't in a duty we are going to be social distancing by default
 	return returnval
 end
@@ -615,7 +623,7 @@ function checkAREA()
 	hcling_counter = hcling_counter + 1
 
 	idle_shitter_counter = idle_shitter_counter + 1
-	--yield("/echo idle shitter counter -> "..idle_shitter_counter)
+	--gawk_gawk_3000("idle shitter counter -> "..idle_shitter_counter)
 	if GetCharacterCondition(26) == true then
 		idle_shitter_counter = 0
 	end
@@ -630,7 +638,7 @@ function checkAREA()
 		if HasPlugin("BossModReborn") then yield("/bmrai setpresetname "..autorotationtypeDD) end
 		are_we_DD = 1
 		hcling = cling + ddistance
-		--yield("/echo we in DD -> hcling is 0> "..hcling)
+		--gawk_gawk_3000("we in DD -> hcling is 0> "..hcling)
 		--deep dungeon requires VBM. BMR **WILL** crash your client without any logs or crash dump
 		--[[ --supposedly fixed now
 		if HasPlugin("BossModReborn") then
@@ -644,7 +652,7 @@ function checkAREA()
 			until HasPlugin("BossMod")
 			yield("/vbmai "..bossmodAI)
 			yield("/vbm setpresetname "..autorotationtype)
-			yield("/echo WE SWITCHED TO VBM FROM BMR - please review DTR bar etc.")
+			gawk_gawk_3000("WE SWITCHED TO VBM FROM BMR - please review DTR bar etc.")
 		end
 		--]]
 --		end
@@ -653,22 +661,22 @@ function checkAREA()
 	if IsInFate() == true then
 		hcling = cling + fdistance
 	end
---	yield("/echo idle_shitter_counter -> "..idle_shitter_counter)
+--	gawk_gawk_3000("idle_shitter_counter -> "..idle_shitter_counter)
 	if idle_shitter_counter > idle_shitter_tic then  --its time to do something idle shitters!
 		idle_shitter_counter = 0
---			yield("/echo we attempted to -> shitter to 0 counter")
+--			gawk_gawk_3000("we attempted to -> shitter to 0 counter")
 		if idle_shitter ~= "list" and idle_shitter ~= "nothing" then
 			yield(idle_shitter)
---			yield("/echo we attempted to -> "..idle_shitter)
+--			gawk_gawk_3000("we attempted to -> "..idle_shitter)
 		end
 		if idle_shitter == "list" then
 			floop = idle_shitter_list[getRandomNumber(1,#idle_shitter_list)]
 			yield(floop.." motion")
---			yield("/echo we attempted to -> list "..floop)
+--			gawk_gawk_3000("we attempted to -> list "..floop)
 		end
 		if idle_shitter == "nothing" then
---			yield("/echo we attempted to -> nothing")
-			--yield("/echo I'm not an idle shitter")
+--			gawk_gawk_3000("we attempted to -> nothing")
+			--gawk_gawk_3000("I'm not an idle shitter")
 		end
 	end
 
@@ -699,7 +707,7 @@ function clingmove(nemm)
 		return --don't do the other stuff until we have opened the door
 	end
 	if GetObjectRawXPos(nemm) == 0 and GetObjectRawYPos(nemm) == 0 and GetObjectRawZPos(nemm) == 0 then
-		yield("/echo Cannot find >"..nemm.."< or they are somehow at 0,0,0 - we are not moving")
+		gawk_gawk_3000("Cannot find >"..nemm.."< or they are somehow at 0,0,0 - we are not moving")
 		return
 	end
 	--jump if we are mounted and below the leader by 10 yalms
@@ -721,7 +729,7 @@ function clingmove(nemm)
 		--sub-area-transition-hack-while-in-duty
 		if are_we_DD == 0 then
 			if bistance > 20 and GetCharacterCondition(34) == true then --maybe we went through subarea transition in a duty?
-				yield("/echo "..nemm.." is kind of far - lets just forge ahead a bit just in case")
+				gawk_gawk_3000(""..nemm.." is kind of far - lets just forge ahead a bit just in case")
 				yield("/hold W <wait.3.0>")
 				yield("/release W")
 				did_we_try_to_move = 1
@@ -730,7 +738,7 @@ function clingmove(nemm)
 		--navmesh
 		if zclingtype == 0 then
 			--DEBUG
-			--yield("/echo x->"..GetObjectRawXPos(nemm).."y->"..GetObjectRawYPos(nemm).."z->"..GetObjectRawZPos(nemm))--if its 0,0,0 we are not gonna do shiiiit.
+			--gawk_gawk_3000("x->"..GetObjectRawXPos(nemm).."y->"..GetObjectRawYPos(nemm).."z->"..GetObjectRawZPos(nemm))--if its 0,0,0 we are not gonna do shiiiit.
 			--PathfindAndMoveTo(GetObjectRawXPos(nemm),GetObjectRawYPos(nemm),GetObjectRawZPos(nemm), false)
 			if bistance > hcling then
 				if are_we_social_distancing == 1 and are_we_in_i_zone == 0 then --if we need to spread AND we arent in a zone of interact
@@ -771,7 +779,7 @@ function clingmove(nemm)
 				yield("/bmrai followtarget on") --* verify this is correct later when we can load dalamud
 				yield("/bmrai followoutofcombat on")
 				yield("/bmrai follow "..GetCharacterName()) 	  --* verify this is correct later when we can load dalamud
-				yield("/echo too far! stop following!")
+				gawk_gawk_3000("too far! stop following!")
 				did_we_try_to_move = 1
 			end
 		end
@@ -821,7 +829,7 @@ countfartula = 2 --redeclare dont worry its fine. we need this so we can do it l
 	while countfartula < 9 do
 		yield("/target <"..countfartula..">")
 		yield("/wait 0.5")
-		yield("/echo is it "..GetTargetName().."?")
+		gawk_gawk_3000("is it "..GetTargetName().."?")
 		if GetTargetName() == fren then
 			fartycardinality = countfartula
 			countfartula = 9
@@ -839,11 +847,11 @@ function checkzoi()
 		if cbt_edse == 1 then 
 			if GetCharacterCondition(34) == true then
 				yield("/cbt enable EnhancedDutyStartEnd")
-				yield("/echo enabling CBT->EnhancedDutyStartEnd")
+				gawk_gawk_3000("enabling CBT->EnhancedDutyStartEnd")
 			end
 			if GetCharacterCondition(34) == false then
 				yield("/cbt disable EnhancedDutyStartEnd")
-				yield("/echo disabling CBT->EnhancedDutyStartEnd")
+				gawk_gawk_3000("disabling CBT->EnhancedDutyStartEnd")
 			end
 		end
 
@@ -866,25 +874,25 @@ function checkzoi()
 		if are_we_in_i_zone == 1 and did_we_toggle == 0 then
 			PandoraSetFeatureState("Auto-interact with Objects in Instances",true)
 			did_we_toggle = 1
-			yield("/echo Turning on Pandora Auto Interact -- it will be turned off when we leave this area")
-			--yield("/echo PandoraSetFeatureState(Auto-interact with Objects in Instances,true)")
+			gawk_gawk_3000("Turning on Pandora Auto Interact -- it will be turned off when we leave this area")
+			--gawk_gawk_3000("PandoraSetFeatureState(Auto-interact with Objects in Instances,true)")
 		end
 		if are_we_in_i_zone == 0 then
 			PandoraSetFeatureState("Auto-interact with Objects in Instances",false)
 			did_we_toggle = 0
-			--yield("/echo PandoraSetFeatureState(Auto-interact with Objects in Instances,false)")
+			--gawk_gawk_3000("PandoraSetFeatureState(Auto-interact with Objects in Instances,false)")
 		end
 	end
 end
 
 --yield("Friend is party slot -> "..partycardinality.." but actually is ff14 slot -> "..fartycardinality)
-yield("/echo Friend is party slot -> "..fartycardinality .. " Order of join -> "..partycardinality.." Fren Join order -> "..shartycardinality)
+gawk_gawk_3000("Friend is party slot -> "..fartycardinality .. " Order of join -> "..partycardinality.." Fren Join order -> "..shartycardinality)
 ClearTarget()
 
 --bmr follow off. default state. slot1 is the runner of this script
 --yield("/bmrai follow slot1")
 yield("/bmrai follow slot1")
-yield("/echo Beginning fren rider main loop")
+gawk_gawk_3000("Beginning fren rider main loop")
 
 xp_item_equip = 0 --counter
 re_engage = 0 --counter
@@ -911,7 +919,7 @@ while weirdvar == 1 do
 				renav_check = renav_check + 1
 				if renav_check > 10 then
 					renav_check = 0
-					yield("/echo Gently checking nav")
+					gawk_gawk_3000("Gently checking nav")
 					double_check_navGO(GetObjectRawXPos(GetCharacterName()), GetObjectRawYPos(GetCharacterName()), GetObjectRawZPos(GetCharacterName()))
 				end
 			end
@@ -944,12 +952,12 @@ while weirdvar == 1 do
 			
 			--Food check!
 			statoos = GetStatusTimeRemaining(48)
-			---yield("/echo "..statoos)
+			---gawk_gawk_3000(""..statoos)
 			if GetCharacterCondition(26) == false then -- dont eat while fighting it will upset your stomach
 				if type(GetItemCount(feedme)) == "number" then
 					if GetItemCount(feedme) > 0 and statoos < 300 then --refresh food if we are below 5 minutes left
 						yield("/item "..feedmeitem)
-						yield("/echo Attempting to eat "..feedmeitem)
+						gawk_gawk_3000("Attempting to eat "..feedmeitem)
 					end
 				end
 			end
@@ -1013,13 +1021,13 @@ while weirdvar == 1 do
 						--anyways it will trigger if lb3 is ready or when lb2 is max and it hits lb2
 						if (GetLimoot == (GetLimitBreakBarCount() * GetLimitBreakBarValue())) or GetLimoot > 29999 then
 							yield("/rotation Cancel")		
-							yield("/echo Attempting "..local_teext)
+							gawk_gawk_3000("Attempting "..local_teext)
 							yield("/ac "..local_teext)
 						end
 						if GetLimoot < GetLimitBreakBarCount() * GetLimitBreakBarValue() then
 							yield("/rotation auto")		
 						end
-						--yield("/echo limitpct "..limitpct.." HPP"..GetTargetHPP().." HP"..GetTargetHP().." get limoot"..GetLimitBreakBarCount() * GetLimitBreakBarValue()) --debug line
+						--gawk_gawk_3000("limitpct "..limitpct.." HPP"..GetTargetHPP().." HP"..GetTargetHP().." get limoot"..GetLimitBreakBarCount() * GetLimitBreakBarValue()) --debug line
 					end
 				end
 
@@ -1108,7 +1116,7 @@ while weirdvar == 1 do
 					if GetCharacterCondition(4) == true and fly_you_fools == true then
 						--follow the fren
 						if GetCharacterCondition(4) == true and bistance > hcling and PathIsRunning() == false and PathfindInProgress() == false then
-							--yield("/echo attempting to fly to fren")
+							--gawk_gawk_3000("attempting to fly to fren")
 							clingmove(fren)
 
 							yield("/target <"..fartycardinality..">")
@@ -1138,12 +1146,12 @@ while weirdvar == 1 do
 							--yield("/target \""..fren.."\"")
 								--PathfindAndMoveTo(GetObjectRawXPos(fren),GetObjectRawYPos(fren),GetObjectRawZPos(fren), false)
 								clingmove(fren) --movement func
-								--yield("/echo DEBUG line 467ish")
+								--gawk_gawk_3000("DEBUG line 467ish")
 							end
 							yield("/wait 0.5")
 						end	
 
-						--yield("/echo fly fools .."..tostring(fly_you_fools))
+						--gawk_gawk_3000("fly fools .."..tostring(fly_you_fools))
 						if fly_you_fools == true then
 							if GetCharacterCondition(4) == true then
 								yield("/rotation cancel") --keep rotations off
@@ -1167,7 +1175,7 @@ while weirdvar == 1 do
 								yield("/ridepillion <"..fartycardinality.."> 2")
 								yield("/rotation Cancel")
 							--end
-							yield("/echo Attempting to Mount Friend")
+							gawk_gawk_3000("Attempting to Mount Friend")
 							yield("/wait 0.5")
 						end
 					end
