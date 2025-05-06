@@ -163,6 +163,10 @@ tornclothes = ini_check("tornclothes", 0)					-- if we are repairing what pct to
 feedme = ini_check("feedme", 4650)							-- eatfood, in this case itemID 4650 which is "Boiled Egg", use simpletweaks to show item IDs it won't try to eat if you have 0 of said food item
 feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case the item name. for now this is how we'll do it. it isn't pretty but it will work.. for now..
 ----------------------------
+---MISC---------------------
+----------------------------
+cbt_edse = ini_check("cbt_edse", 1)							-- CBT enhanced duty start / end. 0 is off, 1 is on.  if its "on" it will turn on this setting if so in a duty and off outside of one.  default is true to save time multiboxing.
+----------------------------
 ----------------------------
 ----------------------------
 --formations note
@@ -266,12 +270,13 @@ end
 --rotation handling
 function rhandling()
 	if rotationplogon == "BMR" or rotationplogon == "VBM" then
+		flooppy = "bmr"
+		if rotationplogon == "VBM" then flooppy = "vbm" end
 		yield("/rotation cancel")  --turn off RSR
 		if autorotationtype ~= "none" then
-			yield("/vbm ar set "..autorotationtype)
-			yield("/bmr ar set "..autorotationtype)
+			yield("/"..flooppy.." ar set "..autorotationtype)
 			yield("/bmrai followtarget on")
-			yield("/bmrai followoutofcombat
+			yield("/bmrai followoutofcombat on")
 		end
 	end
 	if rotationplogon == "RSR" then
@@ -956,6 +961,7 @@ while weirdvar == 1 do
 				end
 				pandora_interact_toggler_count = pandora_interact_toggler_count + 1
 				checkzoi()
+				if cbt_edse == 1 then yield("/cbt enable EnhancedDutyStartEnd")	end
 			end
 
 			if GetCharacterCondition(34) == false then  --not in duty  
@@ -965,6 +971,7 @@ while weirdvar == 1 do
 	
 				pandora_interact_toggler_count = pandora_interact_toggler_count + 1
 				checkzoi()
+				if cbt_edse == 1 then yield("/cbt disable EnhancedDutyStartEnd")	end
 
 				if formation == true and bistance < maxbistance then
 					-- Inside combat and formation enabled
