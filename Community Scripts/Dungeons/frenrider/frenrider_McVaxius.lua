@@ -836,6 +836,17 @@ function checkzoi()
 --pandora memory leak too real
 	if pandora_interact_toggler_count > 10 then
 		pandora_interact_toggler_count = 0
+		if cbt_edse == 1 then 
+			if GetCharacterCondition(34) == true then
+				yield("/cbt enable EnhancedDutyStartEnd")
+				yield("/echo enabling CBT->EnhancedDutyStartEnd")
+			end
+			if GetCharacterCondition(34) == false then
+				yield("/cbt disable EnhancedDutyStartEnd")
+				yield("/echo disabling CBT->EnhancedDutyStartEnd")
+			end
+		end
+
 		are_we_in_i_zone = 0
 		GZI = GetZoneID()
 		if GZI == 1037 then--tam-tara special behaviour since the bossmodule isn't complete and im lazy - it works
@@ -961,7 +972,6 @@ while weirdvar == 1 do
 				end
 				pandora_interact_toggler_count = pandora_interact_toggler_count + 1
 				checkzoi()
-				if cbt_edse == 1 then yield("/cbt enable EnhancedDutyStartEnd")	end
 			end
 
 			if GetCharacterCondition(34) == false then  --not in duty  
@@ -971,7 +981,6 @@ while weirdvar == 1 do
 	
 				pandora_interact_toggler_count = pandora_interact_toggler_count + 1
 				checkzoi()
-				if cbt_edse == 1 then yield("/cbt disable EnhancedDutyStartEnd")	end
 
 				if formation == true and bistance < maxbistance then
 					-- Inside combat and formation enabled
