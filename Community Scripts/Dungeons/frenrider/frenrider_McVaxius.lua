@@ -166,7 +166,7 @@ feedmeitem = ini_check("feedmeitem", "Boiled Egg")			-- eatfood, in this case th
 ---MISC---------------------
 ----------------------------
 cbt_edse = ini_check("cbt_edse", 1)							-- CBT enhanced duty start / end. 0 is off, 1 is on.  if its "on" it will turn on this setting if so in a duty and off outside of one.  default is true to save time multiboxing.
-spam_printer  = ini_check("spam_printer", 1)				-- set this to 0 if you dont want to see millions of echo messages reporting in on what frenrider is doing. --* incomplete atm.
+spam_printer  = ini_check("spam_printer", 1)				-- set this to 0 if you dont want to see millions of echo messages reporting in on what frenrider is doing. default is 1 because everyone loves seeing garbage fill their chat windows
 ----------------------------
 ----------------------------
 ----------------------------
