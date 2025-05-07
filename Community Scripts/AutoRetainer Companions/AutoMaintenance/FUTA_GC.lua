@@ -188,6 +188,7 @@ function Final_GC_Cleaning()
 						yield("/wait 0.5")
 						yield("/automove")
 						yield("/wait 2")
+						yield("/automove off")
 						yield("/interact")
 						yield("/wait 2")
 						yield("/callback SelectString true 1")
@@ -208,6 +209,7 @@ function Final_GC_Cleaning()
 						yield("/wait 1")
 						yield("/callback SelectString true 0")
 						yield("/wait 1")
+						yield("/automove off")
 
 						buycount = 0
 						while (buycount < buymax) do
@@ -231,6 +233,7 @@ function Final_GC_Cleaning()
 		yield("/wait 0.5")
 		yield("/automove")
 		yield("/wait 2")
+		yield("/automove off")
 		RestoreYesAlready()
 		ClearTarget()
 	end
