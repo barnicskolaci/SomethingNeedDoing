@@ -353,20 +353,25 @@ function CharacterSafeWait()
 	 --ZoneTransition()
 end
 
+function force_equip()
+ if do_we_force_equip == 1 then
+	yield("/echo Forced equipment update has begun - hopefully you have /equiprecommended enabled and /updategearset in /tweaks, aka SimpleTweaks 1PP Plugin from Caraxi")
+	yield("/equipguud") --dont worry about this just some personal thing i did becuase im silly
+	yield("/equiprecommended")
+	yield("/character")
+	if IsAddonReady("Character") then yield("/callback Character true 15") end
+	yield("/wait 0.5")
+	if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+	yield("/character")
+	if IsAddonReady("Character") then yield("/callback Character true 15") end
+	if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
+	yield("/updategearset")
+	yield("/wait 3")
+ end
+end
+
 function visland_stop_moving()
  do_we_force_equip = force_equipstuff or 1  --default is on, unless we specify the global force_equipstuff in the calling script
- if do_we_force_equip == 1 then
-	 yield("/equipguud")
-	 yield("/equiprecommended")
-	 yield("/character")
-	 if IsAddonReady("Character") then yield("/callback Character true 15") end
-	 yield("/wait 0.5")
-	 if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-	 yield("/character")
-	 if IsAddonReady("Character") then yield("/callback Character true 15") end
-	 if IsAddonReady("SelectYesno") then yield("/callback SelectYesno true 0") end
-	 yield("/wait 3")
- end
  muuv = 1
  muuvstop = 0
  muuvX = GetPlayerRawXPos()
@@ -392,16 +397,20 @@ function visland_stop_moving()
  yield("/echo movement stopped safely - script proceeding to next bit")
  yield("/visland stop")
  yield("/vnavmesh stop")
+ yield("/automove off")
  yield("/wait 1")
  --added becuase simpletweaks is slow to update :(
+ --[[
  if do_we_force_equip == 1 then
-	 yield("/character")
-	 yield("/wait 1")
- 	 if IsAddonReady("Character") then yield("/callback Character true 12") end
-	 yield("/wait 1")
-	 yield("/callback RecommendEquip true 0")
-	 yield("/wait 1")
+	yield("/character")
+	yield("/wait 1")
+ 	if IsAddonReady("Character") then yield("/callback Character true 12") end
+	yield("/wait 1")
+	yield("/callback RecommendEquip true 0")
+	yield("/wait 1")
  end
+ --]]
+ force_equip()
 end
 
 function return_to_limsa_bell()
