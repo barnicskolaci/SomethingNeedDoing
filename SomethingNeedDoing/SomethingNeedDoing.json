@@ -1,5 +1,6 @@
+[
   {
-    "Author": "croizat, friendly",
+    "Author": "friendly",
     "Name": "Something Need Doing (Expanded Edition)",
     "Punchline": "Work work.",
     "Description": "Now for more than crafting!",
@@ -15,4 +16,5 @@
     "DalamudApiLevel": "12",
     "Changelog": "maybe getting the iterative node counter to work",
     "IconUrl": "https://s3.puni.sh/media/plugin/25/icon-6h5x17j9gpr.png"
-  }
+  },
+]
