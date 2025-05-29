@@ -281,4 +281,34 @@ public class Addons
     }
 
     public unsafe int GetNodeListCount(string addonName) => TryGetAddonByName<AtkUnitBase>(addonName, out var addon) ? addon->UldManager.NodeListCount : 0;
+
+    public unsafe int CountAllNodes(string addonName)
+{
+    // Try to get the addon by name
+    var ptr = Svc.GameGui.GetAddonByName(addonName, 1);
+    if (ptr == nint.Zero)
+        return 0;
+
+    var addon = (AtkUnitBase*)ptr;
+    var root = addon->GetRootNode();
+    return CountNodesRecursive(root);
+}
+
+    private unsafe int CountNodesRecursive(AtkResNode* node)
+    {
+        if (node == null)
+            return 0;
+    
+        int count = 1; // Count this node
+    
+        // Count child nodes recursively
+        var child = node->ChildNode;
+        while (child != null)
+        {
+            count += CountNodesRecursive(child);
+            child = child->PrevSiblingNode; // Traverse siblings as a linked list
+        }
+    
+        return count;
+    }
 }
