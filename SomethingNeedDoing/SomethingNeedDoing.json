@@ -1,10 +1,18 @@
-{
-  "Author": "daemitus, croizat",
-  "Name": "Something Need Doing (Expanded Edition)",
-  "Punchline": "Work work.",
-  "Description": "Now for more than crafting!",
-  "ApplicableVersion": "any",
-  "DalamudApiLevel": 12,
-  "RepoUrl": "https://github.com/barnicskolaci/SomethingNeedDoing/",
-  "IconUrl": "https://raw.githubusercontent.com/Jaksuhn/SomethingNeedDoing/master/res/orc2.png"
-}
+  {
+    "Author": "croizat, friendly",
+    "Name": "Something Need Doing (Expanded Edition)",
+    "Punchline": "Work work.",
+    "Description": "Now for more than crafting!",
+    "Tags": [],
+    "InternalName": "SomethingNeedDoing",
+    "RepoUrl": "https://github.com/barnicskolaci/SomethingNeedDoing",
+    "DownloadCount": 0,
+    "LastUpdate": 1743086963166,
+    "DownloadLinkInstall": "https://github.com/barnicskolaci/SomethingNeedDoing/blob/master/SomethingNeedDoing-master.zip",
+    "DownloadLinkUpdate": "https://github.com/barnicskolaci/SomethingNeedDoing/blob/master/SomethingNeedDoing-master.zip",
+    "AssemblyVersion": "1.78",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": "12",
+    "Changelog": "maybe getting the iterative node counter to work",
+    "IconUrl": "https://s3.puni.sh/media/plugin/25/icon-6h5x17j9gpr.png"
+  }
