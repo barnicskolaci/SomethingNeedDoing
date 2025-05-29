@@ -1,3 +1,5 @@
+##idk what the fuck i'm doing. if it works, cool, otherwise don't waste your time trying to learn from this at this point. 
+
 # NOTHING THAT INVOLVES GAMEOBJECTS IS WORKING AT THE MOMENT. I AM AWARE. A FIX WILL BE OUT SOON
 
 ## Something Need Doing
